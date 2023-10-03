@@ -1,41 +1,60 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
+"""
+Factorize as many numbers as possible into a product of two smaller numbers.
+
+Functions:
+    find_divisor(num) -> int
+    factorize()
+
+Usage: ./factors <file>
+    Where <file> is a file containing natural numbers to factor.
+    One number per line.
+Output format: n=p*q
+    One factorization per line.
+    p and q are not always prime numbers.
+"""
 
 import sys
-import math
 
-# Function to check if a number is prime
-def is_prime(n):
-    if n <= 1:
-        return False
-    if n <= 3:
-        return True
-    if n % 2 == 0 or n % 3 == 0:
-        return False
-    i = 5
-    while i * i <= n:
-        if n % i == 0 or n % (i + 2) == 0:
-            return False
-        i += 6
-    return True
 
-# Function to factorize a number into two smaller numbers
-def factorize(num):
-    n = int(num)
-    for i in range(2, n // 2 + 1):
-        if n % i == 0:
-            if is_prime(i) and is_prime(n // i):
-                return f"{n}={i}*{n//i}"
-    return f"{n}={n}*1"
+def find_divisor(num: int) -> int:
+    """
+    Finds the smallest divisor of a given number.
+    Args:
+        num (int): A number to find the smallest divisor for.
+    Returns:
+        smallest divisor if found
+        0 if the number is prime
+    """
 
-# Check for correct usage
-if len(sys.argv) != 2:
-    print("Usage: ./factors.py <file>")
-    sys.exit(1)
+    while num % 2 == 0:
+        return 2
 
-file_name = sys.argv[1]
+    factor = 3
+    while factor * factor <= num:
+        if num % factor == 0:
+            return factor
+        else:
+            factor += 2
 
-# Read numbers from the file and factorize them
-with open(file_name, 'r') as file:
-    for line in file:
-        result = factorize(line.strip())
-        print(result)
+    return 1
+
+
+def factorize():
+    """
+    Factorizes as many numbers as possible into
+    a product of two smaller numbers and print them.
+    """
+
+    with open(sys.argv[1]) as f:
+        line = f.readline()
+        while line != '':
+            num = int(line)
+            div = find_divisor(num)
+            print(f"{num}={num//div}*{div}")
+
+            line = f.readline()
+
+
+if __name__ == "__main__":
+    factorize()
